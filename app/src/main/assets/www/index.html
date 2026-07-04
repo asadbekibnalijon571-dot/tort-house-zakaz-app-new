@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#5b2d1f">
+  <title>Tort House Zakaz</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div>
+        <h1>Tort House Zakaz</h1>
+        <p id="connectionStatus">Tayyor</p>
+      </div>
+      <button class="ghost" id="installBtn" hidden>O‘rnatish</button>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-screen="newOrder">+ Yangi</button>
+      <button class="tab" data-screen="orders">Zakazlar</button>
+      <button class="tab" data-screen="settings">Sozlama</button>
+    </nav>
+
+    <main>
+      <section id="newOrder" class="screen active">
+        <div class="card">
+          <div class="sectionTitle">Mijoz ma’lumoti</div>
+          <label>Mijoz ismi <b>*</b><input id="customerName" placeholder="Masalan: Azizbek"></label>
+          <label>Telefon raqami <b>*</b><input id="customerPhone" inputmode="numeric" value="+998 " placeholder="+998 97 103 07 06"></label>
+          <label>Manba <b>*</b>
+            <select id="source">
+              <option value="">Tanlang</option>
+              <option>Chortoq filial</option>
+              <option>Uychi filial</option>
+              <option>Yangiqo‘rg‘on filial</option>
+              <option>Uchqo‘rg‘on filial</option>
+              <option>Instagram</option>
+              <option>Telegram</option>
+              <option>Telefon orqali</option>
+              <option>Boshqa</option>
+            </select>
+          </label>
+          <label id="sourceOtherWrap" class="hidden">Boshqa manba <b>*</b><input id="sourceOther" placeholder="Masalan: TikTok, tanish orqali"></label>
+        </div>
+
+        <div class="card">
+          <div class="sectionTitle">Tort tafsiloti</div>
+          <label>Tort turi <b>*</b><input id="cakeType" placeholder="Bento, kvadrat, 3 qavatli oq tort..."></label>
+          <label>Nachinkasi
+            <div class="inline">
+              <input id="filling" placeholder="Snickers, banan, musiviy...">
+              <button type="button" class="mini" data-fill="filling">Yo‘q</button>
+            </div>
+          </label>
+          <label>Tort rangi
+            <div class="inline">
+              <input id="cakeColor" placeholder="Oq, pushti, tillarang...">
+              <button type="button" class="mini" data-fill="cakeColor">Yo‘q</button>
+            </div>
+          </label>
+          <label>Tort ustidagi yozuv
+            <div class="inline">
+              <input id="cakeText" placeholder="Happy Birthday Madina">
+              <button type="button" class="mini" data-fill="cakeText">Yo‘q</button>
+            </div>
+          </label>
+          <label>Qo‘shimcha izoh
+            <div class="inline">
+              <textarea id="comment" placeholder="Ustiga toj qo‘yilsin..." rows="3"></textarea>
+              <button type="button" class="mini" data-fill="comment">Yo‘q</button>
+            </div>
+          </label>
+        </div>
+
+        <div class="card">
+          <div class="sectionTitle">Rasm</div>
+          <input id="imageInput" type="file" accept="image/*" capture="environment">
+          <img id="preview" class="preview hidden" alt="Rasm preview">
+          <button type="button" class="ghost" id="clearImage">Rasmni o‘chirish</button>
+        </div>
+
+        <div class="card">
+          <div class="sectionTitle">Narx va vaqt</div>
+          <label>Narx <b>*</b><input id="price" inputmode="numeric" placeholder="350000"></label>
+          <label>Zakolat <b>*</b><input id="prepayment" inputmode="numeric" placeholder="100000"></label>
+          <label>Qoldi<input id="remaining" readonly placeholder="Avtomatik"></label>
+          <label>Olib ketish vaqti <b>*</b><input id="pickup" type="datetime-local"></label>
+        </div>
+
+        <div id="errors" class="errors hidden"></div>
+
+        <div class="stickyActions">
+          <button id="saveOrder" class="primary">Saqlash</button>
+          <button id="savePrint" class="secondary">Saqlash + Chek</button>
+        </div>
+      </section>
+
+      <section id="orders" class="screen">
+        <div class="card">
+          <input id="search" placeholder="ID, ism, telefon, tort turi bo‘yicha qidirish">
+          <div class="filters">
+            <button data-filter="all" class="active">Hammasi</button>
+            <button data-filter="today">Bugungi</button>
+            <button data-filter="tomorrow">Ertangi</button>
+            <button data-filter="unsent">Telegramga ketmagan</button>
+            <button data-filter="unprinted">Chop etilmagan</button>
+          </div>
+          <div class="exportBtns">
+            <button id="exportCsv">Excel/CSV eksport</button>
+            <button id="syncAll">Telegramga yuborilmaganlarni yuborish</button>
+          </div>
+        </div>
+        <div id="ordersList"></div>
+      </section>
+
+      <section id="settings" class="screen">
+        <div class="card">
+          <div class="sectionTitle">Xodim va filial</div>
+          <label>Operator ismi<input id="operatorName" placeholder="Masalan: Dilshod"></label>
+          <label>Filial<select id="branchName">
+            <option>Chortoq filial</option><option>Uychi filial</option><option>Yangiqo‘rg‘on filial</option><option>Uchqo‘rg‘on filial</option><option>Operator markaz</option>
+          </select></label>
+        </div>
+        <div class="card">
+          <div class="sectionTitle">Telegram bot</div>
+          <label>Bot token<input id="botToken" placeholder="123456:ABC..."></label>
+          <label>Group Chat ID<input id="chatId" placeholder="-1001234567890"></label>
+          <p class="hint">Token va Group ID kiritilsa, programma Telegram Bot API orqali yuborishga urinadi. Brauzer CORS bloklasa, README ichidagi Apps Script proxy ishlatiladi.</p>
+          <label>Apps Script Web App URL<input id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec"></label>
+        </div>
+        <div class="card">
+          <div class="sectionTitle">Google Sheets / Excel</div>
+          <p class="hint">Hozirgi versiyada Excel uchun CSV eksport bor. Google Sheetsga avtomatik yozish uchun README ichidagi Apps Script kodini ulash kerak.</p>
+        </div>
+        <button id="saveSettings" class="primary full">Sozlamani saqlash</button>
+      </section>
+    </main>
+  </div>
+
+  <div id="receiptModal" class="modal hidden">
+    <div class="modalBox">
+      <div class="modalActions noPrint">
+        <button id="printReceipt" class="primary">Printerga chiqarish</button>
+        <button id="closeReceipt" class="ghost">Yopish</button>
+      </div>
+      <pre id="receiptText" class="receipt"></pre>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "Tort House Zakaz",
+  "short_name": "TH Zakaz",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#fbf5ee",
+  "theme_color": "#5b2d1f",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml"}
+  ]
+}
